@@ -32,9 +32,6 @@ function isstunnelrunning() {
 function _wait_for_memcached_to_startup() {
     for ((i=0; i<20; i++)); do
         if [ -f ${OPENSHIFT_MEMCACHED_DIR}/pid/memcached.pid ]; then
-            if [ "$DISABLE_SASL" != "1" ]; then
-                return 0
-            fi
             if memcached-tool $OPENSHIFT_MEMCACHED_HOST:$OPENSHIFT_MEMCACHED_PORT &>/dev/null; then
                 return 0
             fi
@@ -70,11 +67,6 @@ function start_stunnel() {
 function start() {
     if ! isrunning
     then
-        if [ "$DISABLE_SASL" != "1" ]; then
-            export MEMCACHED_SASL_PWDB=$OPENSHIFT_MEMCACHED_DIR/conf/sasldb
-            OPTIONS="$OPTIONS -S"
-        fi
-
         memcached -d -p $OPENSHIFT_MEMCACHED_PORT -U 0 -l $OPENSHIFT_MEMCACHED_HOST -u `id -u` -m $CACHESIZE -c $MAXCONN -P $OPENSHIFT_MEMCACHED_DIR/pid/memcached.pid $OPTIONS &>> $OPENSHIFT_MEMCACHED_DIR/logs/memcached.log
 
         if [ $? -ne 0 ]; then

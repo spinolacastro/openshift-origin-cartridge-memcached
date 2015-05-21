@@ -23,3 +23,7 @@ openssl req \
 -subj "/C=BR/ST=SP/L=SaoPaulo/O=Cloud/CN=${OPENSHIFT_GEAR_DNS}" \
 -keyout "${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.key" \
 -out "${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.pem"
+
+
+chmod 0600 ${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.pem
+chmod 0600 ${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.key
