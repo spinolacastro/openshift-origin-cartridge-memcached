@@ -13,15 +13,18 @@ client_result 'Put the following lines at your .openshift/action_hooks/build hoo
 client_result ''
 client_result ' echo "'
 client_result ' client = yes'
-client_result " accept = \<\%\= ENV['OPENSHIFT_<CARTRIDGE>_IP'] \%\>:11211"
-client_result " connect = <%= ENV['OPENSHIFT_MEMCACHED_STUNNEL_HOST']%>:<%=['OPENSHIFT_MEMCACHED_STUNNEL_PORT'] %>"
+client_result ' accept = ${OPENSHIFT_<CARTRIDGE>_IP}:11211'
+client_result ' connect = ${OPENSHIFT_MEMCACHED_STUNNEL_HOST}:$OPENSHIFT_MEMCACHED_STUNNEL_PORT}'
 client_result ' verify = 3'
 client_result ' fips = no'
 client_result ' debug = err'
-client_result " output =  <%= ENV['OPENSHIFT_LOG_DIR'] %>/stunnel.log"
-client_result " pid =  <%= ENV['OPENSHIFT_DATA_DIR'] %>/stunnel.pid"
+client_result ' output =  ${OPENSHIFT_LOG_DIR}stunnel.log'
+client_result ' pid =  ${OPENSHIFT_DATA_DIR}stunnel.pid '
 client_result ' [secure]'
-client_result ' CAfile = stunnel.pem "| oo-erb > $OPENSHIFT_DATA_DIR/stunnel.pem'
+client_result ' CAfile = stunnel.pem " > $OPENSHIFT_DATA_DIR/stunnel.pem '
 client_result ''
 client_result ' kill -9 $(<$OPENSHIFT_DATA_DIR/pid/stunnel.pid)'
 client_result ' stunnel $OPENSHIFT_DATA_DIR/stunnel.conf'
+client_result ''
+client_result ''
+client_result ''
