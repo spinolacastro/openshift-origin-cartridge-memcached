@@ -1,6 +1,7 @@
 cert = <%= ENV['OPENSHIFT_MEMCACHED_DIR']  %>conf/stunnel.pem
 key = <%= ENV['OPENSHIFT_MEMCACHED_DIR']  %>conf/stunnel.key
 pid  = <%= ENV['OPENSHIFT_MEMCACHED_DIR'] %>pid/stunnel.pid
+debug = err
 output = <%= ENV['OPENSHIFT_LOG_DIR'] %>stunnel.log
 fips = no
 
