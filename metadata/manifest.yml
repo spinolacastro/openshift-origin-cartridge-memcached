@@ -40,5 +40,7 @@ Endpoints:
   - Private-IP-Name:   HOST
     Private-Port-Name: PORT
     Private-Port:      11211
-    Public-Port-Name:  PROXY_PORT
+  - Private-IP-Name:   STUNNEL
+    Private-Port-Name: STUNNEL_PORT
+    Public-Port-Name:  STUNNEL_PROXY_PROT
 Install-Build-Required: false
