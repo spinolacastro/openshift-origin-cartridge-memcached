@@ -48,7 +48,7 @@ function start_stunnel() {
 
         stunnel ${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.conf
 
-        if [ $? -ne 0]; then
+        if [ $? -ne 0 ]; then
             client_message "Stunnel has failed to start"
             _log "Stunnel has failed to start"
         fi
