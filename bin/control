@@ -13,8 +13,19 @@ function read_pid() {
     fi
 }
 
+function read_stunnel_pid() {
+    if [ -f $OPENSHIFT_MEMCACHED_DIR/pid/stunnel.pid ]; then
+        echo $(<$OPENSHIFT_MEMCACHED_DIR/pid/stunnel.pid)
+    fi
+}
+
 function isrunning() {
     local pid=`read_pid`
+    kill -0 "$pid" 2>/dev/null || return 1
+}
+
+function isstunnelrunning() {
+    local pid=`read_stunnel_pid`
     kill -0 "$pid" 2>/dev/null || return 1
 }
 
@@ -32,6 +43,29 @@ function _wait_for_memcached_to_startup() {
     done
     return 1
 }
+
+function start_stunnel() {
+
+    if ! isstunnelrunning
+    then
+
+        stunnel ${OPENSHIFT_MEMCACHED_DIR}conf/stunnel.conf
+
+        if [ $? -ne 0]; then
+            client_message "Stunnel has failed to start"
+            _log "Stunnel has failed to start"
+        fi
+        if [ -f ${OPENSHIFT_MEMCACHED_DIR}/pid/stunnel.pid  ]; then
+            client_result "Stunnel started"
+            _log "Stunnel started with PID=$(read_stunnel_pid)"
+        fi
+    else
+        client_result "Stunnel already running"
+    fi
+
+}
+
+
 
 function start() {
     if ! isrunning
@@ -54,6 +88,32 @@ function start() {
     else
         client_result "Memcached already running"
     fi
+}
+
+
+function stop_stunnel() {
+    local pid=`read_stunnel_pid`
+
+    if [ -n "$pid" ]; then
+        if kill "$pid" 2>/dev/null; then
+            TIMEOUT="$STOPTIMEOUT"
+            while [ $TIMEOUT -gt 0 -a -f "$OPENSHIFT_MEMCACHED_DIR/pid/stunnel.pid" ]; do
+                kill -0 "$pid" 2>/dev/null || break
+                sleep 1
+                let TIMEOUT=${TIMEOUT}-1
+            done
+            /bin/rm -f $OPENSHIFT_MEMCACHED_DIR/pid/stunnel.pid
+            _log "Stunnel stopped"
+        fi
+    else
+        if `pgrep -x stunnel >/dev/null 2>&1`
+        then
+            client_message "Stunnel process exists without a pid file. Use force-stop to kill."
+        else
+            client_result "Stunnel already stopped"
+        fi
+     fi
+
 }
 
 function stop() {
@@ -83,13 +143,17 @@ function stop() {
 case "$1" in
     start)
         start
+        start_stunnel
     ;;
     stop)
         stop
+        stop_stunnel
     ;;
     restart)
         stop
+        stop_stunnel
         start
+        start_stunnel
     ;;
     status)
         if isrunning
@@ -97,6 +161,12 @@ case "$1" in
             client_result "Memcached is running"
         else
             client_result "Memcached is stopped"
+        fi
+        if isstunnelrunning
+        then
+            client_result "Stunnel is running"
+        else
+            client_result "Stunnel is stopped"
         fi
         exit 0
     ;;

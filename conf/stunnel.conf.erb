@@ -1,0 +1,10 @@
+cert = <%= ENV['OPENSHIFT_MEMCACHED_DIR']  %>conf/stunnel.pem
+key = <%= ENV['OPENSHIFT_MEMCACHED_DIR']  %>conf/stunnel.key
+pid  = <%= ENV['OPENSHIFT_MEMCACHED_DIR'] %>pid/stunnel.pid
+log = overwrite
+output = <%= ENV['OPENSHIFT_LOG_DIR'] %>stunnel.log
+fips = no
+
+[secure]
+accept  = <%= ENV['OPENSHIFT_MEMCACHED_HOST'] %>:<%= ENV['OPENSHIFT_MEMCACHED_STUNNEL_PORT'] %>
+connect = <%= ENV['OPENSHIFT_MEMCACHED_HOST'] %>:<%= ENV['OPENSHIFT_MEMCACHED_PORT'] %>
