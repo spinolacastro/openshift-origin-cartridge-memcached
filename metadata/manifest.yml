@@ -43,5 +43,6 @@ Endpoints:
     Private-Port:      11211
   - Private-IP-Name:   STUNNEL
     Private-Port-Name: STUNNEL_PORT
+    Private-Port:      8000
     Public-Port-Name:  STUNNEL_PROXY_PROT
 Install-Build-Required: false
