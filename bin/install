@@ -13,7 +13,7 @@ client_result 'Put the following lines at your .openshift/action_hooks/build hoo
 client_result ''
 client_result ' echo "'
 client_result ' client = yes'
-client_result " accept = <%= ENV['OPENSHIFT_<CARTRIDGE>_IP'] %>:11211"
+client_result " accept = \<\%\= ENV['OPENSHIFT_<CARTRIDGE>_IP'] \%\>:11211"
 client_result " connect = <%= ENV['OPENSHIFT_MEMCACHED_STUNNEL_HOST']%>:<%=['OPENSHIFT_MEMCACHED_STUNNEL_PORT'] %>"
 client_result ' verify = 3'
 client_result ' fips = no'
